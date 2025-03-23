@@ -1,4 +1,5 @@
 import { RequestOptions } from '@/lib/types/api-client-type';
+import { isServer } from '@/utils/env';
 
 export const getServerCookies = async () => {
   if (typeof window !== 'undefined') return '';
@@ -15,30 +16,22 @@ export const getServerCookies = async () => {
       return '';
     }
   });
-}
+};
 
 const createApiUrlWithParams = (url: string, params?: RequestOptions['params']) => {
   if (!params) return url;
 
   const filteredParamsList = Object.fromEntries(
-    Object.entries(params).filter(([, value]) => value !== undefined && value !== null)
+    Object.entries(params).filter(([, value]) => value !== undefined && value !== null),
   );
   if (Object.keys(filteredParamsList).length === 0) return url;
 
   const queryString = new URLSearchParams(filteredParamsList as Record<string, string>).toString();
   return `${url}?${queryString}`;
-}
+};
 
 export const fetchApi = async <T>(url: string, options: RequestOptions = {}): Promise<T> => {
-  const {
-    method = 'GET',
-    headers = {},
-    body,
-    cookie,
-    params,
-    cache = 'no-store',
-    next,
-  } = options;
+  const { method = 'GET', headers = {}, body, cookie, params, cache = 'no-store', next } = options;
 
   let cookieHeader = cookie;
   if (typeof window === 'undefined' && !cookie) {
@@ -50,8 +43,8 @@ export const fetchApi = async <T>(url: string, options: RequestOptions = {}): Pr
   const response = await fetch(urlWithParams, {
     method,
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
       ...headers,
       ...(cookieHeader ? { Cookie: cookieHeader } : {}),
     },
@@ -66,13 +59,51 @@ export const fetchApi = async <T>(url: string, options: RequestOptions = {}): Pr
   }
 
   return response.json();
-}
-
+};
 
 export const fetchApiInterceptor = {
   get: <T>(url: string, options?: RequestOptions): Promise<T> => fetchApi<T>(url, { ...options, method: 'GET' }),
-  post: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> => fetchApi<T>(url, { ...options, method: 'POST', body }),
-  put: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> => fetchApi<T>(url, { ...options, method: 'PUT', body }),
-  patch: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> => fetchApi<T>(url, { ...options, method: 'PATCH', body }),
-  delete: <T>(url: string, options: RequestOptions = {}): Promise<T> => fetchApi<T>(url, { ...options, method: 'DELETE' }),
+  post: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> =>
+    fetchApi<T>(url, { ...options, method: 'POST', body }),
+  put: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> =>
+    fetchApi<T>(url, { ...options, method: 'PUT', body }),
+  patch: <T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> =>
+    fetchApi<T>(url, { ...options, method: 'PATCH', body }),
+  delete: <T>(url: string, options: RequestOptions = {}): Promise<T> =>
+    fetchApi<T>(url, { ...options, method: 'DELETE' }),
+};
+
+export const getAccessTokenFromCookies = async () => {
+  const cookies = await getServerCookies();
+
+  const accessToken = cookies
+    .split('; ')
+    .find((cookie) => cookie.startsWith('accessToken='))
+    ?.split('=')[1];
+
+  return accessToken || '';
+};
+
+export const fetchApiWithAuth = async <T>(url: string, options: RequestOptions = {}): Promise<T> => {
+  if (!isServer()) {
+    throw new Error('fetchApiWithAuth is only available on the server');
+  }
+
+  const accessToken = await getAccessTokenFromCookies();
+  if (!accessToken) {
+    throw new Error('Access token not found in cookies');
+  }
+
+  const headers = {
+    ...options.headers,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+  };
+
+  const newOptions = {
+    ...options,
+    headers,
+  };
+
+  return fetchApi<T>(url, newOptions);
 };

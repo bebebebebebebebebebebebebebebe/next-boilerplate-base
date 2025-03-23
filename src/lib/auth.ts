@@ -1,38 +1,32 @@
-import { RequestOptions } from "@/lib/types/api-client-type";
-import { getServerCookies, fetchApi } from "@/lib/api-client";
-import { isServer } from "@/utils/env";
+import NextAuth, { NextAuthConfig } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
-const getAccessTokenFromCookies = async () => {
-  const cookies = await getServerCookies();
+const GOOGLE_AUTHORIZATION_URL =
+  'https://accounts.google.com/o/oauth2/v2/auth?' +
+  new URLSearchParams({
+    prompt: 'consent',
+    access_type: 'offline',
+    response_type: 'code',
+  });
 
-  const accessToken = cookies
-    .split('; ')
-    .find((cookie) => cookie.startsWith('accessToken='))
-    ?.split('=')[1];
+const nextAuthConfig: NextAuthConfig = {
+  trustHost: true,
+  secret: process.env.NEXTAUTH_SECRET || 'next-auth-secret',
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      authorization: GOOGLE_AUTHORIZATION_URL,
+    }),
+  ],
+  session: {
+    strategy: 'jwt',
+  },
+};
 
-  return accessToken || '';
-}; 
-
-export const fetchApiWithAuth = async <T>(url: string, options: RequestOptions = {}): Promise<T> => {
-  if (!isServer()) {
-    throw new Error('fetchApiWithAuth is only available on the server');
-  }
-
-  const accessToken = await getAccessTokenFromCookies();
-  if (!accessToken) {
-    throw new Error('Access token not found in cookies');
-  }
-
-  const headers = {
-    ...options.headers,
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`,
-  };
-
-  const newOptions = {
-    ...options,
-    headers,
-  };
-
-  return fetchApi<T>(url, newOptions);
-}
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(nextAuthConfig);
