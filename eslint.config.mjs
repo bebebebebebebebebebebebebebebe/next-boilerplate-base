@@ -26,7 +26,7 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off"
     },
     ignores: [
-      "node_modules/*",
+      "**/node_modules/**",
     ],
     languageOptions: {
       parser: "@typescript-eslint/parser",
