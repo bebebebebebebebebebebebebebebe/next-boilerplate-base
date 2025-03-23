@@ -37,7 +37,7 @@ const actionTexts = {
   login: "ログイン",
 };
 
-const BaseFormButton: FC<ProviderButtonProps> = ({
+const BaseFormButtonWithIcon: FC<ProviderButtonProps> = ({
   className,
   onClick,
   provider,
@@ -65,4 +65,4 @@ const BaseFormButton: FC<ProviderButtonProps> = ({
   );
 };
 
-export default BaseFormButton;
+export default BaseFormButtonWithIcon;

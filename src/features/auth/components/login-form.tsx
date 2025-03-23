@@ -11,48 +11,31 @@ import BaseFormButtonWithIcon, {
 } from "./buttons/BaseFormButtonWithIcon";
 import Link from "next/link";
 
-export default function SignUpForm() {
+const LoginForm = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // ここにフォーム送信のロジックを実装
     console.log("フォームが送信されました");
   };
-
   return (
-    <AuthForm title="アカウント作成">
+    <AuthForm title="ログイン">
       <Card className="bg-gradient-to-br from-gray-50 to-white shadow-lg">
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4 pt-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="lastName">姓</Label>
-                <Input
-                  id="lastName"
-                  required
-                  className="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="firstName">名</Label>
-                <Input
-                  id="firstName"
-                  required
-                  className="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="username">ユーザー名（任意）</Label>
-              <Input
-                id="username"
-                className="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              />
-            </div>
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <Input
                 id="email"
                 type="email"
+                required
+                className="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">パスワード</Label>
+              <Input
+                id="password"
+                type="password"
                 required
                 className="border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               />
@@ -63,7 +46,7 @@ export default function SignUpForm() {
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
             >
-              アカウント作成
+              ログイン
             </Button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -74,18 +57,17 @@ export default function SignUpForm() {
               </div>
             </div>
             <BaseFormButtonWithIcon
-              provider={providers[0]}
-              action="signup"
               className="w-full"
-              onClick={() => console.log(false)}
+              provider={providers[0]}
+              action="login"
             />
             <div className="text-center text-sm text-gray-500 mt-4">
-              既にアカウントをお持ちですか？{" "}
+              アカウントをお持ちでないですか？{" "}
               <Link
-                href="/auth/login"
+                href="/auth/signup"
                 className="font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
               >
-                ログイン
+                新規登録
               </Link>
             </div>
           </CardFooter>
@@ -93,4 +75,6 @@ export default function SignUpForm() {
       </Card>
     </AuthForm>
   );
-}
+};
+
+export default LoginForm;
