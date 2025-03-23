@@ -23,3 +23,10 @@ const nextAuthConfig: NextAuthConfig = {
     strategy: 'jwt',
   },
 };
+
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth(nextAuthConfig);
