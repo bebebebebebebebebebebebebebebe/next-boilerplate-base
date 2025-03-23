@@ -1,26 +1,16 @@
-"use client";
-
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import AuthForm from "./auth-form";
-import BaseFormButtonWithIcon, {
-  providers,
-} from "./buttons/BaseFormButtonWithIcon";
 import Link from "next/link";
+import OAuthProviderButton from "./buttons/OAuthProviderButton";
 
 const LoginForm = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // ここにフォーム送信のロジックを実装
-    console.log("フォームが送信されました");
-  };
   return (
     <AuthForm title="ログイン">
       <Card className="bg-gradient-to-br from-gray-50 to-white shadow-lg">
-        <form onSubmit={handleSubmit}>
+        <form>
           <CardContent className="space-y-4 pt-6">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
@@ -56,11 +46,7 @@ const LoginForm = () => {
                 <span className="bg-white px-2 text-gray-500">または</span>
               </div>
             </div>
-            <BaseFormButtonWithIcon
-              className="w-full"
-              provider={providers[0]}
-              action="login"
-            />
+            <OAuthProviderButton providers={["Google"]} formType="login" />
             <div className="text-center text-sm text-gray-500 mt-4">
               アカウントをお持ちでないですか？{" "}
               <Link

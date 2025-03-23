@@ -1,27 +1,16 @@
-"use client";
-
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import AuthForm from "./auth-form";
-import BaseFormButtonWithIcon, {
-  providers,
-} from "./buttons/BaseFormButtonWithIcon";
 import Link from "next/link";
+import OAuthProviderButton from "./buttons/OAuthProviderButton";
 
 export default function SignUpForm() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // ここにフォーム送信のロジックを実装
-    console.log("フォームが送信されました");
-  };
-
   return (
     <AuthForm title="アカウント作成">
       <Card className="bg-gradient-to-br from-gray-50 to-white shadow-lg">
-        <form onSubmit={handleSubmit}>
+        <form>
           <CardContent className="space-y-4 pt-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -73,12 +62,7 @@ export default function SignUpForm() {
                 <span className="bg-white px-2 text-gray-500">または</span>
               </div>
             </div>
-            <BaseFormButtonWithIcon
-              provider={providers[0]}
-              action="signup"
-              className="w-full"
-              onClick={() => console.log(false)}
-            />
+            <OAuthProviderButton providers={["Google"]} formType="signup" />
             <div className="text-center text-sm text-gray-500 mt-4">
               既にアカウントをお持ちですか？{" "}
               <Link

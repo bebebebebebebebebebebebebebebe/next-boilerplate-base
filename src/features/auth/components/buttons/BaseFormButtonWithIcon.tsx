@@ -5,7 +5,7 @@ import GoogleButtonIcon from "./icons/GoogleButtonIcon";
 
 export type AuthAction = "signup" | "login";
 
-export interface ProviderConfig {
+export interface ProviderStyle {
   name: string;
   bgColor: string;
   textColor: string;
@@ -16,21 +16,21 @@ export interface ProviderConfig {
 
 export interface ProviderButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  provider: ProviderConfig;
-  action: AuthAction;
+  provider: ProviderStyle;
+  textContent: string;
   className?: string;
 }
 
-export const providers: ProviderConfig[] = [
-  {
-    name: "Google",
-    bgColor: "bg-white",
-    textColor: "text-gray-700",
-    hoverBgColor: "hover:bg-gray-50",
-    hoverBorderColor: "hover:border-gray-400",
-    icon: <GoogleButtonIcon />,
-  },
-];
+// export const providers: ProviderConfig[] = [
+//   {
+//     name: "Google",
+//     bgColor: "bg-white",
+//     textColor: "text-gray-700",
+//     hoverBgColor: "hover:bg-gray-50",
+//     hoverBorderColor: "hover:border-gray-400",
+//     icon: <GoogleButtonIcon />,
+//   },
+// ];
 
 const actionTexts = {
   signup: "登録",
@@ -41,7 +41,7 @@ const BaseFormButtonWithIcon: FC<ProviderButtonProps> = ({
   className,
   onClick,
   provider,
-  action,
+  textContent,
   ...props
 }) => {
   return (
@@ -60,7 +60,8 @@ const BaseFormButtonWithIcon: FC<ProviderButtonProps> = ({
       {...props}
     >
       {provider.icon}
-      {provider.name}で{actionTexts[action]}
+      {textContent}
+      {/* {provider.name}で{actionTexts[action]} */}
     </Button>
   );
 };

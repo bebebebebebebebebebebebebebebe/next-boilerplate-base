@@ -1,3 +1,5 @@
+import { AuthProvider } from "@/features/types/auth.type";
+
 export interface IOAuthStrategy<TLogin, TSignUp> {
   login(credentials: TLogin): Promise<AuthResult>;
   signup(signUpData: TSignUp): Promise<AuthResult>;
@@ -10,8 +12,6 @@ export type AuthResult = {
   provider: AuthProvider;
   expiresIn?: number;
 };
-
-export type AuthProvider = 'email' | 'google' | 'github' | 'metamask';
 
 export type OAuthLoginData = {
   provider: AuthProvider;
@@ -37,7 +37,7 @@ export type EmailSignUpData = {
 
 // export class EmailOAuthStrategy implements IOAuthStrategy<EmailLoginData, EmailSignUpData> {
 //   async login(credentials: EmailLoginData): Promise<AuthResult> {
-      
+
 //   }
 
 //   async signup(signUpData: EmailSignUpData): Promise<AuthResult> {
@@ -45,6 +45,6 @@ export type EmailSignUpData = {
 //   }
 
 //   async refreshToken(token: string): Promise<AuthResult> {
-    
+
 //   }
 // }
